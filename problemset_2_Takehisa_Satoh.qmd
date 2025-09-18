@@ -1,0 +1,141 @@
+---
+title: "STATS506_Problemset2_Takehisa_Satoh"
+format: pdf
+editor: visual
+---
+
+# problem 1
+# a.verstion 1 loop
+```{r}
+
+#function:perform the specified random walk 
+#Input: The number of steps
+#Output: The final position of the walk
+
+random_walk1 <- function(n){
+  
+  pos <- 0
+  trace <- numeric(n+1)
+  trace[1]<- pos
+  
+  for ( i in 1:n) {
+  dir <- sample(c(1,-1),1)
+  
+  if (dir == 1){
+    if (runif(1) < 0.05){
+      pos <- pos + 10
+    }
+    else{ 
+      pos <- pos + 1
+    }
+    }
+  else{
+    if (runif(1) < 0.2){
+      pos <- pos - 3
+      }else{
+      pos <- pos -1 
+      }
+    }  
+  
+  trace [i+1]<- pos
+  }
+plot(0:n,trace,type="l", xlab="Step", ylab="Position",main =paste("Random Walk :Loop (n=",n,")"))
+  return (pos) 
+}
+
+random_walk1(10)
+
+
+```
+
+# a.version2 vectorized function
+```{r}
+random_walk2 <- function(n){
+  dir <- sample(c(1,-1),n, replace=TRUE)
+  rnd_plus <- runif(n)
+  rnd_minus <-runif(n)
+  
+  steps <-ifelse(
+    dir == 1,
+    ifelse(rnd_plus<0.05,10,1),
+    ifelse(rnd_minus<0.2,-3,-1)
+  ) 
+  
+  pos_trace <- c(0,cumsum(steps))
+  
+  plot(0:n,pos_trace,type="l",xlab="Step",ylab="Position",main=paste("Random Walk :Vectorize (n=",n,")"))
+
+  return(pos_trace[n])
+    
+}
+
+random_walk2(10)
+```
+
+a.version3 apply function
+```{r}
+random_walk3 <- function(n) {
+  steps <- sapply(1:n,function(i){
+    dir<- sample(c(1,-1), 1)
+    if(dir==1){
+     if (runif(1)<0.05){
+       10
+      }else{
+        1
+      }
+    }else{
+      if (runif(1)<0.2){
+        -3
+        }else{
+          -1
+        }
+       }
+      })
+  trace_step<- c(0,cumsum(steps))    
+
+  plot(0:n,trace_step,type="l",xlab="Steps", ylab="Postion",main =paste("Randam Walk:Apply function (n=",n,")"))
+  
+  return(trace_step[n])
+  
+  }
+  
+random_walk3(10)
+
+```
+
+
+```{r}
+random_walk1(10)
+random_walk2(10)
+random_walk3(10)
+random_walk1(1000)
+random_walk2(1000)
+random_walk3(1000)
+```
+
+# https://bioinfo-dojo.net/2017/08/09/r-cumsum/ helped me figure out some functions.
+
+
+```{r}
+
+
+## Quarto
+
+Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+
+## Running Code
+
+When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
+
+```{r}
+1 + 1
+```
+
+You can add options to executable code like this
+
+```{r}
+#| echo: false
+2 * 2
+```
+
+The `echo: false` option disables the printing of code (only output is displayed).
